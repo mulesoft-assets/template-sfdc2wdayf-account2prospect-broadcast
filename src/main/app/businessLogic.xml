@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper"
+	xmlns:wd-revenue="http://www.mulesoft.org/schema/mule/wd-revenue"
+	xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc"
+	xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" xmlns:json="http://www.mulesoft.org/schema/mule/json"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.6.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
+http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd
+http://www.mulesoft.org/schema/mule/wd-revenue http://www.mulesoft.org/schema/mule/wd-revenue/current/mule-wd-revenue.xsd
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd">
+	<data-mapper:config name="Map_To_PutProspectRequestType"
+		transformationGraphPath="map_to_putprospectrequesttype.grf" doc:name="Map_To_PutProspectRequestType" />
+
+	<batch:job name="syncAccountsBatch">
+		<batch:threading-profile poolExhaustedAction="WAIT" />
+
+		<batch:process-records>
+			<batch:step name="getProspectInWorkdayStep">
+				<enricher doc:name="store in recordVar 'wdayfProspect'"
+					source="#[payload]" target="#[recordVars['wdayfProspect']]">
+					<processor-chain doc:name="Get existing">
+						<wd-revenue:get-prospects config-ref="Workday_Revenue_Management"
+							getProspectsRequest-ref="#[org.mule.templates.ProspectRequest.createByID(payload['Id'])]"
+							doc:name="getProspect By Id" />
+					</processor-chain>
+				</enricher>
+			</batch:step>
+			<batch:step name="upsertProspect">
+				<logger message="Upserting Prospect..." level="INFO"
+					doc:name="Upsert" />
+				<data-mapper:transform config-ref="Map_To_PutProspectRequestType"
+					doc:name="Map To PutProspectRequestType">
+					<data-mapper:input-arguments>
+						<data-mapper:input-argument key="extSourceIDType">External_Source_Code</data-mapper:input-argument>
+						<data-mapper:input-argument key="extSourceID">SFDC</data-mapper:input-argument>
+					</data-mapper:input-arguments>
+				</data-mapper:transform>
+				<expression-component doc:name="Prepare for upsert"><![CDATA[if (recordVars['wdayfProspect'].responseResults.totalResults == 0) {
+	// Remove ID type as it is an insert
+	payload.prospectReference = null;
+} else {
+	// Add target system ID value as it is an update
+	payload.prospectReference.ID[0].value = recordVars['wdayfProspect'].responseData.prospect[0].prospectData.prospectID;
+}
+]]></expression-component>
+				<wd-revenue:put-prospect config-ref="Workday_Revenue_Management"
+					doc:name="Upsert Prospect" />
+				<json:object-to-json-transformer
+					doc:name="Object to JSON" />
+				<logger message="Upsert Prospect response data: #[payload]"
+					level="INFO" doc:name="Logger" />
+			</batch:step>
+		</batch:process-records>
+		<batch:on-complete>
+            <json:object-to-json-transformer doc:name="transform BatchJobInstance to JSON"/>
+            <logger message="Migration process has finished: #[payload]" level="INFO" doc:name="log 'Migration process has finished'"/>
+
+		</batch:on-complete>
+	</batch:job>
+
+
+</mule>
