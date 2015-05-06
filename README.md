@@ -5,6 +5,7 @@
 + [Use Case](#usecase)
 + [Considerations](#considerations)
 	* [Salesforce Considerations](#salesforceconsiderations)
+	* [Workday Considerations](#workdayconsiderations)
 	* [Workday Financials Considerations](#workdayfinancialsconsiderations)
 + [Run it!](#runit)
 	* [Running on premise](#runonopremise)
@@ -89,7 +90,12 @@ column='486'
 
 
 
+## Workday Considerations <a name="workdayconsiderations"/>
 
+
+### As destination of data
+
+There are no particular considerations for this Anypoint Template regarding Workday as data destination.
 
 
 
@@ -134,6 +140,7 @@ Once you have imported you Anypoint Template into Anypoint Studio you need to fo
 + Once that is done, right click on you Anypoint Template project folder 
 + Hover you mouse over `"Run as"`
 + Click on  `"Mule Application"`
+
 
 ### Running on Mule ESB stand alone <a name="runonmuleesbstandalone"/>
 Complete all properties in one of the property files, for example in [mule.prod.properties] (../master/src/main/resources/mule.prod.properties) and run your app with the corresponding environment variable to use it. To follow the example, this will be `mule.env=prod`. 
