@@ -5,9 +5,9 @@
 	</placeholders>
 	<sections>
 		<section id="use_case">
-As a Salesforce admin I want to synchronize Accounts and Prospects between Salesfoce and Workday.
+As a Salesforce admin I want to synchronize Accounts and Prospects between Salesforce and Workday.
 
-This Template should serve as a foundation for setting an online sync of Accounts from SalesForce instance to Prospects in Workday instance. Everytime there is a new Account or a change in an already existing one with type=Prospect, the integration will poll for changes in SalesForce source instance and it will be responsible for updating the Prospect in the target Workday instance.
+This Template should serve as a foundation for setting an online synchronization of Accounts from SalesForce instance to Prospects in Workday instance. Every time there is a new Account or a change in an already existing one with type=Prospect, the integration will poll for changes in SalesForce source instance and it will be responsible for updating the Prospect in the target Workday instance.
 
 Requirements have been set not only to be used as examples, but also to establish a starting point to adapt your integration to your requirements.
 
@@ -41,6 +41,8 @@ Follow other steps defined [here](#runonpremise) and once your app is all set an
 		<![CDATA[
 **Application configuration**
 
++ page.size `200`
+
 + poll.frequencyMillis `60000`
 + poll.startDelayMillis `0`
 + watermark.default.expression `YESTERDAY`
@@ -50,7 +52,7 @@ Follow other steps defined [here](#runonpremise) and once your app is all set an
 + sfdc.username `joan.baez@orgb`
 + sfdc.password `JoanBaez456`
 + sfdc.securityToken `ces56arl7apQs56XTddf34X`
-+ sfdc.url `https://login.salesforce.com/services/Soap/u/26.0`
++ sfdc.url `https://login.salesforce.com/services/Soap/u/32.0`
 
 **Workday Connector configuration**
 
@@ -64,13 +66,14 @@ Follow other steps defined [here](#runonpremise) and once your app is all set an
 		<![CDATA[
 Salesforce imposes limits on the number of API Calls that can be made. Therefore calculating this amount may be an important factor to consider. Account Broadcast Template calls to the API can be calculated using the formula:
 
-***1 + X + X / 200***
+**X / 200**
 
-Being ***X*** the number of Accounts to be synchronized on each run. 
+Being X the number of Accounts to be synchronized on each poll.
 
-The division by ***200*** is because, by default, Accounts are gathered in groups of 200 for each Upsert API Call in the commit step. Also consider that this calls are executed repeatedly every polling cycle.	
-
-For instance if 10 records are fetched from origin instance, then 12 api calls will be made (1 + 10 + 1).
+The division by 200 is because, by default, Accounts are gathered in groups
+of 200 for each API Call..
+ 
+Also consider that this calls are executed repeatedly every polling cycle.
 ]]>
 		</section>
 		<section id="default_business_logic_xml">
