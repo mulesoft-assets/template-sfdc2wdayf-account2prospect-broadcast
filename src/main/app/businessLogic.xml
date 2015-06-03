@@ -47,6 +47,7 @@ http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schem
                         <data-mapper:input-argument key="street">${wdayf.street}</data-mapper:input-argument>
                         <data-mapper:input-argument key="country">${wdayf.country}</data-mapper:input-argument>
                         <data-mapper:input-argument key="state">${wdayf.state}</data-mapper:input-argument>
+                        <data-mapper:input-argument key="phone">${wdayf.phone}</data-mapper:input-argument>
 					</data-mapper:input-arguments>
 				</data-mapper:transform>
 				<expression-component doc:name="Prepare for upsert"><![CDATA[if (recordVars['wdayfProspect'].responseResults.totalResults == 0) {

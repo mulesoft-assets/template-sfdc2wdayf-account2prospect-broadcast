@@ -110,7 +110,10 @@ public class BusinessLogicIT extends AbstractTemplateTestCase {
 	public void editTestDataInSandbox(String name, String website) throws Exception {
 		// create object to edit the test account with
 		Map<String, Object> account = SfdcObjectBuilder.anAccount().with("Id", SFDC_TEST_ACCOUNT_ID).with("Name", name)
-				.with("Website", website).with("BillingPostalCode", "90210").build();
+				.with("Website", website)
+				.with("BillingPostalCode", "90210")
+				.with("Phone", "123-4567")
+				.build();
 		List<Map<String, Object>> payload = new ArrayList<>();
 		payload.add(account);
 
@@ -153,5 +156,9 @@ public class BusinessLogicIT extends AbstractTemplateTestCase {
 				.getProspectName(), name);
 		assertEquals("The website should be the same", response.getResponseData().getProspect().get(0).getProspectData()
 				.getContactData().getWebAddressData().get(0).getWebAddress(), website);
+		assertEquals("The phone should be the same", response.getResponseData().getProspect().get(0).getProspectData()
+				.getContactData().getPhoneData().get(0).getPhoneNumber(), "123-4567");
+		assertEquals("The postal code should be the same", response.getResponseData().getProspect().get(0).getProspectData()
+				.getContactData().getAddressData().get(0).getPostalCode(), "90210");
 	}
 }
