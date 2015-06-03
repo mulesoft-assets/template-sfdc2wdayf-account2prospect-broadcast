@@ -164,7 +164,7 @@ In order to use this Mule Anypoint Template you need to configure properties (Cr
 
 + poll.frequencyMillis `60000`
 + poll.startDelayMillis `0`
-+ watermark.default.expression `YESTERDAY`
++ watermark.default.expression `2015-04-01T19:40:27.000Z`
 
 **Salesforce Connector configuration**
 
