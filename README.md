@@ -178,6 +178,11 @@ In order to use this Mule Anypoint Template you need to configure properties (Cr
 + wdayf.user `wdayf_user`
 + wdayf.password `wdayf_password`
 + wdayf.endpoint `https://{your Workday domain}/ccx/service/{your tenant name}/Revenue_Management/v23.2`
++ wdayf.country `USA`
++ wdayf.state `USA-CA`
++ wdayf.postalCode `90001`
++ wdayf.city `San Francisco`
++ wdayf.street `Main Street 123`
 
 # API Calls <a name="apicalls"/>
 Salesforce imposes limits on the number of API Calls that can be made. Therefore calculating this amount may be an important factor to consider. Account Broadcast Template calls to the API can be calculated using the formula:

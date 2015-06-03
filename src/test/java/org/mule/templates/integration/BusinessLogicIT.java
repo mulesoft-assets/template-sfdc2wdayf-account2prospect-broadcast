@@ -110,7 +110,7 @@ public class BusinessLogicIT extends AbstractTemplateTestCase {
 	public void editTestDataInSandbox(String name, String website) throws Exception {
 		// create object to edit the test account with
 		Map<String, Object> account = SfdcObjectBuilder.anAccount().with("Id", SFDC_TEST_ACCOUNT_ID).with("Name", name)
-				.with("Website", website).build();
+				.with("Website", website).with("BillingPostalCode", "90210").build();
 		List<Map<String, Object>> payload = new ArrayList<>();
 		payload.add(account);
 

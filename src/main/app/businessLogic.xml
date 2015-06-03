@@ -35,13 +35,18 @@ http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schem
 				</enricher>
 			</batch:step>
 			<batch:step name="upsertProspect">
-				<logger message="Upserting Prospect..." level="INFO"
+				<logger message="Upserting Prospect...#[payload]" level="INFO"
 					doc:name="Logger" />
 				<data-mapper:transform config-ref="Map_To_PutProspectRequestType"
 					doc:name="Map To PutProspectRequestType">
 					<data-mapper:input-arguments>
 						<data-mapper:input-argument key="extSourceIDType">External_Source_Code</data-mapper:input-argument>
 						<data-mapper:input-argument key="extSourceID">SFDC</data-mapper:input-argument>
+                        <data-mapper:input-argument key="city">${wdayf.city}</data-mapper:input-argument>
+                        <data-mapper:input-argument key="postalCode">${wdayf.postalCode}</data-mapper:input-argument>
+                        <data-mapper:input-argument key="street">${wdayf.street}</data-mapper:input-argument>
+                        <data-mapper:input-argument key="country">${wdayf.country}</data-mapper:input-argument>
+                        <data-mapper:input-argument key="state">${wdayf.state}</data-mapper:input-argument>
 					</data-mapper:input-arguments>
 				</data-mapper:transform>
 				<expression-component doc:name="Prepare for upsert"><![CDATA[if (recordVars['wdayfProspect'].responseResults.totalResults == 0) {
