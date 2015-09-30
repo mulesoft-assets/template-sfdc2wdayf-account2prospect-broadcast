@@ -164,7 +164,7 @@ In order to use this Mule Anypoint Template you need to configure properties (Cr
 
 + poll.frequencyMillis `60000`
 + poll.startDelayMillis `0`
-+ watermark.default.expression `2015-04-01T19:40:27.000Z`
++ watermark.default.expression `2015-09-30T10:00:00.000Z`
 
 **Salesforce Connector configuration**
 
@@ -187,16 +187,7 @@ In order to use this Mule Anypoint Template you need to configure properties (Cr
 + wdayf.phone `123-4567`
 
 # API Calls <a name="apicalls"/>
-Salesforce imposes limits on the number of API Calls that can be made. Therefore calculating this amount may be an important factor to consider. Account Broadcast Template calls to the API can be calculated using the formula:
-
-**X / 200**
-
-Being X the number of Accounts to be synchronized on each poll.
-
-The division by 200 is because, by default, Accounts are gathered in groups
-of 200 for each API Call..
- 
-Also consider that this calls are executed repeatedly every polling cycle.
+Salesforce imposes limits on the number of API Calls that can be made. However, we make API call to Salesforce only once during migration, so this is not something to worry about.
 
 
 # Customize It!<a name="customizeit"/>
