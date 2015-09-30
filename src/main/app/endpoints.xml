@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
-	xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.6.2"
+<mule version="EE-3.7.2"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" 
+	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+	xmlns="http://www.mulesoft.org/schema/mule/core" 
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
@@ -13,16 +16,13 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 	<flow name="triggerFlow" initialState="started"
 		processingStrategy="synchronous" >
 		<poll doc:name="Poll Salesforce for Accounts">
-			<fixed-frequency-scheduler frequency="${poll.frequencyMillis}"
-				startDelay="${poll.startDelayMillis}" />
-			<watermark variable="lastQueryDate" default-expression="${watermark.default.expression}"
-				selector="MAX" selector-expression="#[payload.LastModifiedDate]" />
+			<fixed-frequency-scheduler frequency="${poll.frequencyMillis}" startDelay="${poll.startDelayMillis}" />
+			<watermark variable="lastQueryDate" default-expression="${watermark.default.expression}" selector="MAX" selector-expression="#[payload.LastModifiedDate]" />
             <processor-chain doc:name="Processor Chain">
                 <logger message="Fetching accounts: #[lastQueryDate]" level="INFO" doc:name="Logger"/>
-                <sfdc:query config-ref="Salesforce" query="dsql:SELECT BillingAddress,Description,Id,Industry,Name,Phone,Type,Website, LastModifiedDate  
+                <sfdc:query config-ref="Salesforce" query="dsql:SELECT BillingStreet,BillingCity,BillingPostalCode,BillingState,BillingCountry,Description,Id,Industry,Name,Phone,Type,Website, LastModifiedDate  
 FROM Account WHERE LastModifiedDate &gt; #[lastQueryDate] AND Type = 'Prospect'" fetchSize="${page.size}" doc:name="Query Accounts with filtering criteria from Salesforce"/>
             </processor-chain>
-
 		</poll>
         <expression-filter expression="#[payload.size() &gt; 0]" doc:name="Filter empty payload"/>
 
