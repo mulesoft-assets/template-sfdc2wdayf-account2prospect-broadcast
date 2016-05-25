@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.mule.MessageExchangePattern;
 import org.mule.api.MuleEvent;
 import org.mule.api.lifecycle.InitialisationException;
+import org.mule.construct.Flow;
 import org.mule.processor.chain.SubflowInterceptingChainLifecycleWrapper;
 import org.mule.templates.builders.SfdcObjectBuilder;
 
@@ -35,7 +36,7 @@ public class BusinessLogicIT extends AbstractTemplateTestCase {
 
 	private static final String PATH_TO_TEST_PROPERTIES = "./src/test/resources/mule.test.properties";
 
-	private static SubflowInterceptingChainLifecycleWrapper retrieveProspectFromWorkdayFlow;
+	private static Flow retrieveProspectFromWorkdayFlow;
 	private static SubflowInterceptingChainLifecycleWrapper updateAccountInSalesforceFlow;
 
 	@BeforeClass
@@ -70,8 +71,7 @@ public class BusinessLogicIT extends AbstractTemplateTestCase {
 	 */
 	private void getAndInitializeFlows() throws InitialisationException {
 		// Flow for retrieving prospect from Workday instance
-		retrieveProspectFromWorkdayFlow = getSubFlow("retrieveProspectFlow");
-		retrieveProspectFromWorkdayFlow.initialise();
+		retrieveProspectFromWorkdayFlow = getFlow("retrieveProspectFlow");
 
 		// Flow for updating account in Salesforce instance
 		updateAccountInSalesforceFlow = getSubFlow("updateAccountFlow");
